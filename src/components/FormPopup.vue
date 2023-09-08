@@ -1,8 +1,9 @@
 <template>
     <div class="form-popup">
         <button class="button button--primary" type="button" @click="showModal()">Добавить</button>
+
         <dialog ref="formPopup" class="form-popup__content">
-            <form ref="form" action="" class="form-popup__form form" @submit.prevent="$store.dispatch('submitForm', currentPersonId)">
+            <form ref="form" action="" class="form-popup__form form" @submit.prevent="submit()">
                 <label
                     class="form__group"
                     v-for="(input, id) in inputs" :key="input.name"
@@ -16,9 +17,11 @@
                         :required="input.required"
                         @input="updateInput(id, $event.target.value)">
                 </label>
+
                 <label class="form__group" v-if="hasPersonsName">
                     <span class="form__label">Начальник</span>
-                    <select name="parent" v-model="currentPersonId">
+                    <select class="form__select" name="parent" v-model="currentPersonId">
+                        <option value="">Выберите начальника</option>
                         <option
                             v-for="(option, i) in currentPersonsNames"
                             :key="option+i"
@@ -26,8 +29,10 @@
                         >{{option.name}}</option>
                     </select>
                 </label>
+
                 <button class="form__button button button--primary" type="submit">Сохранить</button>
             </form>
+
             <div class="form-popup__bottom">
                 <button class="button button--secondary" @click="closeModal()">Закрыть окно</button>
             </div>
@@ -41,7 +46,7 @@ export default {
     name: "FormPopup",
     data(){
         return{
-            currentPersonId: null
+            currentPersonId: '',
         }
     },
     computed:{
@@ -50,23 +55,27 @@ export default {
             return this.formInputs;
         },
         hasPersonsName(){
-            return this.personsNames.length > 0
+            return this.personsNames.length > 0;
         },
         currentPersonsNames(){
-            return this.personsNames
+            return this.personsNames;
         }
     },
     methods: {
         ...mapMutations(['UPDATE_INPUT']),
         ...mapActions(['submitForm']),
         showModal(){
-            this.$refs.formPopup.showModal()
+            this.$refs.formPopup.showModal();
         },
         closeModal(){
-            this.$refs.formPopup.close()
+            this.$refs.formPopup.close();
         },
         updateInput(id, value){
-            this.UPDATE_INPUT({id, value})
+            this.UPDATE_INPUT({id, value});
+        },
+        submit(){
+            this.submitForm(this.currentPersonId);
+            this.currentPersonId = '';
         }
     }
 }
@@ -98,8 +107,11 @@ dialog::backdrop {
         margin-bottom: 10px;
     }
     &__input{
-        min-height: 40px;
         padding: 5px 15px;
+    }
+    &__input,
+    &__select{
+        min-height: 40px;
         border: 1px solid #e3aa5e;
         width: 100%;
     }

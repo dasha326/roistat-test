@@ -46,13 +46,13 @@ export default new Vuex.Store({
   } as IState,
   getters: {},
   mutations: {
-    ADD_PERSON(state, parameters){
+    ADD_PERSON(state, parameters:IPerson){
       state.persons.push(parameters);
     },
-    UPDATE_INPUT(state, {id, value}){
-      state.formInputs[id].value = value
+    UPDATE_INPUT(state, {id, value}: {id:number, value: string}){
+      state.formInputs[id].value = value;
     },
-    UPDATE_PERSON(state, {parentId, parameters}){
+    UPDATE_PERSON(state, {parentId, parameters}: {parentId:number, parameters: IPerson}){
       function findCurrentParent(arr:Array<IPerson>, itemId:number){
         arr.forEach(item => {
           if (item.id === itemId) {
@@ -64,9 +64,9 @@ export default new Vuex.Store({
         })
       }
       findCurrentParent(state.persons, parentId);
-      state.persons =  JSON.parse(JSON.stringify(state.persons));
+      state.persons = JSON.parse(JSON.stringify(state.persons));
     },
-    SORT_PERSONS(state, parameter){
+    SORT_PERSONS(state, parameter:string){
       function sortPerson(arr:Array<IPerson>, parameter:string){
         arr.forEach(item => {
           if (item.children) sortPerson(item.children, parameter);
@@ -87,7 +87,7 @@ export default new Vuex.Store({
     sortParameters({commit}, parameter:string) {
       commit('SORT_PERSONS', parameter);
     },
-    submitForm({state, commit}, parentId:null|number){
+    submitForm({state, commit}, parentId:''|number){
       const personId = Date.now();
       const personParameters:Record<string, string> = {};
 
@@ -98,7 +98,7 @@ export default new Vuex.Store({
 
       state.personsNames.push({
         id: personId,
-        name: personParameters.name
+        name: personParameters.name,
       })
 
       const parameters = {
@@ -106,11 +106,20 @@ export default new Vuex.Store({
         parameters: personParameters,
       } as IPerson;
 
-      if (parentId !== null){
-        commit('UPDATE_PERSON', {parentId, parameters})
+      if (parentId !== ''){
+        commit('UPDATE_PERSON', {parentId, parameters});
       } else {
-        commit('ADD_PERSON', parameters)
+        commit('ADD_PERSON', parameters);
       }
+
+      localStorage.setItem('siteInfo', JSON.stringify({
+        persons: state.persons,
+        personsNames: state.personsNames,
+      }))
+    },
+    setSiteInfo({state}, info){
+      state.persons = info.persons;
+      state.personsNames = info.personsNames;
     }
   },
   modules: {

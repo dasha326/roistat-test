@@ -2,11 +2,12 @@
     <li class="table__item table-item">
         <div class="table-item__row">
             <button v-if="isParent" class="table-item__button" @click="buttonClickHandler">+</button>
+
             <div class="table-item__cell" v-for="(parameter, i) in person.parameters" :key="parameter+i">
                 {{ parameter }}
             </div>
         </div>
-        <div class="table-item__dropdown"  v-show="childIsOpen">
+        <div class="table-item__dropdown" v-show="childIsOpen">
             <slot></slot>
         </div>
     </li>
@@ -18,8 +19,8 @@ export default {
     props: {
         person: Object,
     },
-    data(){
-        return{
+    data() {
+        return {
             childIsOpen: false,
         }
     },
@@ -28,8 +29,8 @@ export default {
             return !!this.person.children;
         }
     },
-    methods:{
-        buttonClickHandler(){
+    methods: {
+        buttonClickHandler() {
             this.childIsOpen = !this.childIsOpen;
         }
     }
@@ -40,7 +41,8 @@ export default {
 .table-item {
     $root: &;
     margin-top: 2px;
-    &__row{
+
+    &__row {
         display: grid;
         grid-template-columns: repeat(var(--table-colum), 1fr);
         position: relative;
@@ -50,16 +52,23 @@ export default {
         display: table-cell;
         border: 1px solid #8f8f8f;
         padding: 10px;
+
+        &:not(:last-child) {
+            margin-right: 2px;
+        }
     }
-    &__button{
+
+    &__button {
         position: absolute;
         height: 100%;
-        + #{$root}__cell{
+
+        + #{$root}__cell {
             padding-left: 30px;
         }
     }
-    &__dropdown{
-        padding-left: 10px;
+
+    &__dropdown {
+        padding: 0 5px;
     }
 }
 </style>

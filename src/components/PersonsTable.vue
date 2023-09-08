@@ -1,6 +1,7 @@
 <template>
     <section :style="cssVars">
         <h1>Таблица данных</h1>
+
         <div class="table">
             <div class="table__head">
                 <div
@@ -8,8 +9,10 @@
                     v-for="(item, i) in headers"
                     :key="item.name+i"
                     @click="$store.dispatch('sortParameters', item.name)"
-                >{{ item.label }}</div>
+                >{{ item.label }}
+                </div>
             </div>
+
             <PersonsTableList :persons="currentPersons"/>
         </div>
     </section>
@@ -18,22 +21,22 @@
 <script>
 import {mapState} from 'vuex';
 import PersonsTableList from "@/components/PersonsTableList";
+
 export default {
     name: "PersonsTable",
     components: {PersonsTableList},
-    data(){
-        return{
-        }
+    data() {
+        return {}
     },
     computed: {
         ...mapState(['formInputs', 'persons']),
-        headers(){
+        headers() {
             return this.formInputs
         },
-        currentPersons(){
+        currentPersons() {
             return this.persons
         },
-        cssVars () {
+        cssVars() {
             return {
                 '--table-colum': this.formInputs.length
             }
@@ -43,25 +46,34 @@ export default {
 </script>
 
 <style lang="scss">
-.table{
+.table {
     display: table;
     border-collapse: separate;
     border-spacing: 2px;
     border: 1px solid #000;
     min-width: 500px;
-    &__head{
+
+    &__head {
         display: grid;
         grid-template-columns: repeat(var(--table-colum), 1fr);
     }
-    &__title{
+
+    &__title {
         border: 1px solid #8f8f8f;
         padding: 10px;
         font-weight: 700;
-        &:not(:last-child){
+
+        &:not(:last-child) {
             margin-right: 2px;
         }
     }
-    &__item:nth-child(even){
+
+    &__item:nth-child(odd) {
+        background-color: #bdb9b7;
+
+    }
+
+    &__item:nth-child(even) {
         background-color: #e8c799;
     }
 }

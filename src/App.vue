@@ -16,6 +16,12 @@ export default Vue.extend({
         FormPopup,
         PersonsTable,
     },
+    beforeMount() {
+        const siteInfo = localStorage.getItem('siteInfo');
+        if (siteInfo) {
+            this.$store.dispatch('setSiteInfo', JSON.parse(siteInfo));
+        }
+    },
 });
 </script>
 
